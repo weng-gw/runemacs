@@ -91,6 +91,16 @@
   :diminish which-key-mode
   :config
   (setq which-key-idle-delay 3))
+
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
    
 
 ;; Set key global key bindings
@@ -100,6 +110,8 @@
 ;;(define-key emacs-lisp-mode-map (kbd "C-x M-t") 'counsel-load-theme)
 
 (use-package general)
+
+
 
 ;; (use-package evil
 ;;   :init
