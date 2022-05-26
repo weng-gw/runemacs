@@ -1,0 +1,3 @@
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+(message "Hello")
+#+end_src

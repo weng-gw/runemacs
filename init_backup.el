@@ -240,6 +240,13 @@ _~_: modified
 
 (use-package visual-fill-column
   :hook (org-mode . wgw/org-mode-visual-fill))
+
+(org-babel-do-load-languages
+  'org-babel-load-languages
+  '((emacs-lisp . t)
+    (python . t)))
+
+
   
  
 
