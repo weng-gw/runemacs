@@ -1,3 +1,6 @@
+(setq user-full-name "Guangwei Weng"
+      user-mail-address "wengx076@umn.edu")
+
 ;; Initialize package sources
 (require 'package)
 
@@ -21,7 +24,7 @@
 (tool-bar-mode -1)          ; Disable the toolbar
 (tooltip-mode -1)           ; Disable tooltips
 (set-fringe-mode 10)        ; Give some breathing room
-(menu-bar-mode -1)          ; Disable the menu bar
+;;(menu-bar-mode -1)          ; Disable the menu bar
 (setq visible-bell t)       ; Set up the visible bella
 
 ;; Set default font
@@ -103,6 +106,9 @@
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helpful-key))
 
+(use-package window-numbering
+  :init (window-numbering-mode 1))
+
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
@@ -142,17 +148,17 @@ _~_: modified
 (defun wgw/org-font-setup ()
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
-			  '(("^ *\\([-]\\) "
-			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
   ;; Set faces for heading levels
   (dolist (face '((org-level-1 . 1.3)
-		  (org-level-2 . 1.1)
-		  (org-level-3 . 1.05)
-		  (org-level-4 . 1.0)
-		  (org-level-5 . 1.1)
-		  (org-level-6 . 1.1)
-		  (org-level-7 . 1.1)
-		  (org-level-8 . 1.1)))
+                  (org-level-2 . 1.1)
+                  (org-level-3 . 1.05)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.1)
+                  (org-level-6 . 1.1)
+                  (org-level-7 . 1.1)
+                  (org-level-8 . 1.1)))
     (set-face-attribute (car face) nil  :weight 'bold :height (cdr face))))
 
 (defun wgw/org-mode-setup ()
@@ -161,6 +167,8 @@ _~_: modified
   (visual-line-mode 1))
 
 (use-package org
+  :init
+  (add-hook 'org-mode-hook 'flyspell-mode)
   :hook (org-mode . wgw/org-mode-setup)
   :config
   (setq org-ellipsis " ▾")
@@ -174,7 +182,7 @@ _~_: modified
 
 (defun wgw/org-mode-visual-fill ()
   (setq visual-fill-column-width 100
-	visual-fill-column-center-text t)
+        visual-fill-column-center-text t)
   (visual-fill-column-mode 1))
 
 (use-package visual-fill-column
@@ -221,3 +229,67 @@ _~_: modified
 
 ;; (use-package evil-magit
 ;;   :after magit)
+
+(setq-default ispell-program-name "aspell")
+
+(use-package ess
+  :defer t
+  :bind ("C-c C-s" . ess-switch-process)
+  :config (setq ess-fancy-comments nil)
+  ;(setq ess-use-company t)
+  ;(add-hook 'ess-mode-hook 'company-mode)
+  )
+
+;; Use ploymode for R markdown
+(use-package polymode
+  :defer t
+  )
+
+(use-package poly-R
+  :defer t
+  )
+
+(use-package auctex
+  :hook  (LaTeX-mode . flyspell-mode)
+  :init
+  (add-hook 'LaTeX-mode-hook 'auto-fill-mode)
+  (setq TeX-PDF-mode t)
+  (setq TeX-view-program-selection '((output-pdf "Skim")))
+  (setq TeX-view-program-list
+	'(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+  (add-hook 'LaTeX-mode-hook
+	    (lambda()
+	      (latex-math-mode 1)
+	      (add-to-list
+	       'TeX-command-list' ("XeLaTeX" "%`xelatex -synctex=1%(mode)%' %t" TeX-run-TeX nil t))
+	      (setq TeX-command-default "XeLaTeX")
+	      (setq TeX-show-compilation nil)))
+  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (setq TeX-source-correlate-method 'synctex)
+  (setq TeX-source-correlate-mode t)
+  (setq TeX-source-correlate-start-server t)
+  )
+
+(use-package yasnippet
+  :config (yas-reload-all)
+  (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+  (add-hook 'python-mode-hook 'yas-minor-mode)
+  (add-hook 'ess-mode-hook 'yas-minor-mode)
+  (add-hook 'LaTeX-mode-hook 'yas-minor-mode)
+  (add-hook 'org-mode-hook 'yas-minor-mode)
+  (add-hook 'markdown-mode-hook 'yas-minor-mode)
+  (add-hook 'scala-mode-hook 'yas-minor-mode)
+  (add-hook 'lisp-mode-hook 'yas-minor-mode))
+;; note the snippets bundle needs to be installed separately
+;; use M-x package-list-packages to list all packages available and install yasnippet-snippets or yasnippet-classic-snippets`
+
+(use-package ein
+  :defer t
+  :config (require 'ein)
+  (setq ein:completion-backend 'ein:use-company-jedi-backend)
+  (require 'ein-loaddefs)
+  (require 'ein-notebook)
+  (require 'ein-subpackages)
+  )
+(use-package markdown-mode)
