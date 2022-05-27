@@ -1,4 +1,5 @@
 #+title: New Emacs configuration
 
 Regenerate Emacs configuration according to [[https://github.com/daviwil/emacs-from-scratch]]
+
 Will merge this file into current configuration in the future.

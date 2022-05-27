@@ -246,12 +246,18 @@ _~_: modified
   '((emacs-lisp . t)
     (python . t)))
 
+(require 'org-tempo)
 
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("elconf" . "src emacs-lisp :tangle ./init.el :mkdirp yes"))
+(add-to-list 'org-structure-template-alist '("py" . "src python"))
   
  
-
-
-
-
-
-
+(defun wgw/org-babel-tangle-config ()
+  (when (string-equal (buffer-file-name)
+                      (expand-file-name "~/Documents/Projects/runemacs/Emacs.org"))
+    ;; Dynamic scoping to the rescue
+    (let ((org-confirm-babel-evaluate nil))
+      (org-babel-tangle))))
+(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'wgw/org-babel-tangle-config)))
