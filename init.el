@@ -1,5 +1,6 @@
 (setq user-full-name "Guangwei Weng"
       user-mail-address "wengx076@umn.edu")
+(server-start)
 
 ;; Initialize package sources
 (require 'package)
@@ -25,9 +26,9 @@
 (tooltip-mode -1)           ; Disable tooltips
 (set-fringe-mode 10)        ; Give some breathing room
 ;;(menu-bar-mode -1)          ; Disable the menu bar
-(setq visible-bell t)       ; Set up the visible bella
+(setq visible-bell 1)       ; Set up the visible bella
 
-;; Set default font
+;; Set font
 (set-face-attribute 'default nil :font "Menlo-13")    ;; Set default font
 
 (column-number-mode)
@@ -208,6 +209,42 @@ _~_: modified
       (org-babel-tangle))))
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'wgw/org-babel-tangle-config)))
 
+(defun wgw/lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . wgw/lsp-mode-setup)
+  :init
+  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+  :config
+  (lsp-enable-which-key-integration t))
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom))
+
+(use-package lsp-treemacs
+  :after lsp)
+
+(use-package lsp-ivy)
+
+(use-package company
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :bind (:map company-active-map
+         ("<tab>" . company-complete-selection))
+        (:map lsp-mode-map
+         ("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+
 (use-package projectile
   :diminish projectile-mode
   :config (projectile-mode)
@@ -283,6 +320,30 @@ _~_: modified
   (add-hook 'lisp-mode-hook 'yas-minor-mode))
 ;; note the snippets bundle needs to be installed separately
 ;; use M-x package-list-packages to list all packages available and install yasnippet-snippets or yasnippet-classic-snippets`
+
+(use-package lsp-python-ms
+  :ensure t
+  :hook (python-mode . (lambda ()
+                         (require 'lsp-python-ms)
+                         (lsp)))
+  :init
+  (setq lsp-python-ms-executable (executable-find "python-language-server")))
+
+(use-package python-mode
+  :ensure t
+  ;:hook (python-mode . lsp)
+  ;:custom
+  ;; NOTE: Set these if Python 3 is called "python3" on your system!
+  ;;(python-shell-interpreter "ipython")
+  ;; (dap-python-executable "python3")
+  ;(dap-python-debugger 'debugpy)
+  ;:config
+  ;(require 'dap-python)
+  )
+
+(use-package pyvenv
+  :config
+  (add-hook 'python-mode-hook 'pyvenv-mode ))
 
 (use-package ein
   :defer t
