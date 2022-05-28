@@ -321,13 +321,11 @@ _~_: modified
 ;; note the snippets bundle needs to be installed separately
 ;; use M-x package-list-packages to list all packages available and install yasnippet-snippets or yasnippet-classic-snippets`
 
-(use-package lsp-python-ms
+(use-package lsp-pyright
   :ensure t
   :hook (python-mode . (lambda ()
-                         (require 'lsp-python-ms)
-                         (lsp)))
-  :init
-  (setq lsp-python-ms-executable (executable-find "python-language-server")))
+                          (require 'lsp-pyright)
+                          (lsp))))  ; or lsp-deferred
 
 (use-package python-mode
   :ensure t

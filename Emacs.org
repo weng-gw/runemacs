@@ -483,11 +483,11 @@ Then we set =aspell= to be used by =ispell=.
 Make sure we install the python language server first
 #+begin_src shell
   pip install --user "python-lsp-server[all]"
-  pip install --user "python-language-server[all]"
+  pip install --user "python-language-server[all]" 
   ## python-language-server is not maintained
 #+end_src
 
-#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+#+begin_src emacs-lisp 
 (use-package lsp-python-ms
   :ensure t
   :hook (python-mode . (lambda ()
@@ -495,6 +495,20 @@ Make sure we install the python language server first
                          (lsp)))
   :init
   (setq lsp-python-ms-executable (executable-find "python-language-server")))
+#+end_src
+
+Python Language server and =lsp-python-ms= have been archived and are now replaced by =pyright= ([[https://github.com/emacs-lsp/lsp-python-ms/]]).
+
+#+begin_src shell
+  pip install pyright
+#+end_src
+
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+(use-package lsp-pyright
+  :ensure t
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-pyright)
+                          (lsp))))  ; or lsp-deferred
 #+end_src
 
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
@@ -508,19 +522,6 @@ Make sure we install the python language server first
     ;(dap-python-debugger 'debugpy)
     ;:config
     ;(require 'dap-python)
-    )
-#+end_src
-
-
-#+begin_src emacs-lisp 
-  (use-package anaconda-mode
-    :ensure t
-    ;:hook (python-mode . lsp)
-    :config
-    (add-hook 'python-mode-hook 'anaconda-mode)
-    (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
-    ;;(setq python-shell-interpreter "ipython")
-    ;;(add-hook 'python-mode-hook 'company-mode)
     )
 #+end_src
 
