@@ -488,13 +488,15 @@ Make sure we install the python language server first
 #+end_src
 
 #+begin_src emacs-lisp 
-(use-package lsp-python-ms
-  :ensure t
-  :hook (python-mode . (lambda ()
-                         (require 'lsp-python-ms)
-                         (lsp)))
-  :init
-  (setq lsp-python-ms-executable (executable-find "python-language-server")))
+  (use-package lsp-python-ms
+    :ensure t
+    :hook (python-mode . (lambda ()
+                           (require 'lsp-python-ms)
+                           (lsp)))
+    :init
+    ;(setq lsp-python-ms-executable (executable-find "python-language-server"))
+    (setq lsp-python-ms-auto-install-server t)
+    )
 #+end_src
 
 Python Language server and =lsp-python-ms= have been archived and are now replaced by =pyright= ([[https://github.com/emacs-lsp/lsp-python-ms/]]).
